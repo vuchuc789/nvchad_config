@@ -44,8 +44,13 @@ local plugins = {
     "nvim-treesitter/nvim-treesitter",
     opts = overrides.treesitter,
     dependencies = {
+      {
+        "nvim-treesitter/nvim-treesitter-context",
+        config = function()
+          require "custom.configs.context"
+        end,
+      },
       "nvim-treesitter/nvim-treesitter-textobjects",
-      "nvim-treesitter/nvim-treesitter-context",
       "windwp/nvim-ts-autotag",
       "JoosepAlviste/nvim-ts-context-commentstring",
     },
@@ -64,6 +69,24 @@ local plugins = {
       require("Comment").setup(opts)
     end,
     dependencies = "JoosepAlviste/nvim-ts-context-commentstring",
+  },
+
+  {
+    "hrsh7th/nvim-cmp",
+    -- event = "InsertEnter",
+    dependencies = {
+      {
+        -- snippet plugin
+        "L3MON4D3/LuaSnip",
+        dependencies = "rafamadriz/friendly-snippets",
+        opts = { history = true, updateevents = "TextChanged,TextChangedI" },
+        config = function(_, opts)
+          require "custom.configs.luasnip"
+
+          require("plugins.configs.others").luasnip(opts)
+        end,
+      },
+    },
   },
 
   -- Install a plugin
@@ -86,8 +109,8 @@ local plugins = {
 
   {
     "ggandor/lightspeed.nvim",
-    lazy = false,
     dependencies = "tpope/vim-repeat",
+    lazy = false,
   },
 
   -- To make a plugin not be loaded

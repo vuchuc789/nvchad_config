@@ -1,4 +1,3 @@
-local capabilities = require("plugins.configs.lspconfig").capabilities
 local utils = require "core.utils"
 
 local lspconfig = require "lspconfig"
@@ -7,10 +6,9 @@ local lspconfig_eslint = require "lspconfig.server_configurations.eslint"
 local custom_utils = require "custom.utils"
 
 local M = {}
-M.capabilities = capabilities
 
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
-local on_attach = function(client, bufnr)
+M.on_attach = function(client, bufnr)
   utils.load_mappings("lspconfig", { buffer = bufnr })
 
   if client.server_capabilities.signatureHelpProvider then
@@ -33,21 +31,21 @@ local on_attach = function(client, bufnr)
   end
 end
 
-M.on_attach = on_attach
+M.capabilities = vim.lsp.protocol.make_client_capabilities()
 
 -- if you just want default config for the servers then put them in a table
-local servers = { "html", "cssls", "tsserver", "pyright", "gopls" }
+local servers = { "html", "cssls", "tsserver", "gopls" }
 
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
+    on_attach = M.on_attach,
+    capabilities = M.capabilities,
   }
 end
 
 lspconfig.eslint.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
+  on_attach = M.on_attach,
+  capabilities = M.capabilities,
   root_dir = function(fname)
     -- detect yarn pnp
     local pnp_root = custom_utils.detect_yarn_pnp(fname)
@@ -72,8 +70,8 @@ lspconfig.eslint.setup {
 }
 
 lspconfig.pyright.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
+  on_attach = M.on_attach,
+  capabilities = M.capabilities,
   on_init = function(client)
     local path = client.workspace_folders[1].name
 
