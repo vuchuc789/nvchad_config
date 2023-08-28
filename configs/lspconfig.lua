@@ -34,7 +34,7 @@ end
 M.capabilities = vim.lsp.protocol.make_client_capabilities()
 
 -- if you just want default config for the servers then put them in a table
-local servers = { "html", "cssls", "tsserver", "gopls" }
+local servers = { "html", "cssls", "tsserver", "gopls", "dockerls", "docker_compose_language_service" }
 
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
