@@ -34,7 +34,7 @@ end
 M.capabilities = vim.lsp.protocol.make_client_capabilities()
 
 -- if you just want default config for the servers then put them in a table
-local servers = { "html", "cssls", "tsserver", "gopls", "dockerls", "docker_compose_language_service" }
+local servers = { "html", "cssls", "gopls", "dockerls" }
 
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
@@ -42,6 +42,17 @@ for _, lsp in ipairs(servers) do
     capabilities = M.capabilities,
   }
 end
+
+lspconfig.tsserver.setup {
+  on_attach = M.on_attach,
+  capabilities = M.capabilities,
+  commands = {
+    OR = {
+      custom_utils.ts_organize_imports,
+      description = "Organize Imports",
+    },
+  },
+}
 
 lspconfig.eslint.setup {
   on_attach = M.on_attach,
